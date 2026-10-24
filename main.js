@@ -175,7 +175,6 @@
         setText("apBlurb", a.blurb);
         document.getElementById("apIos").href = a.ios;
         document.getElementById("apAnd").href = a.and;
-        a.floats.forEach(([v, l], i) => { setText(`f${i}v`, v); setText(`f${i}l`, l); });
         panel.classList.remove("swap");
       }, 220);
       decks.apps.set(a.shots);
@@ -196,7 +195,6 @@
         const link = document.getElementById("cLink");
         link.hidden = !a.href;
         if (a.href) link.href = a.href;
-        a.floats.forEach(([v, l], i) => { setText(`c${i}v`, v); setText(`c${i}l`, l); });
         cPanel.classList.remove("swap");
       }, 220);
       decks.client.set(a.shots);
@@ -275,16 +273,12 @@
     }
   }
 
-  let scrollRaf = 0;
-  function onScroll() {
-    if (scrollRaf) return;
-    scrollRaf = requestAnimationFrame(() => {
-      scrollRaf = 0;
-      const max = document.documentElement.scrollHeight - innerHeight;
-      root.style.setProperty("--p", max > 0 ? (scrollY / max).toFixed(4) : "0");
-    });
-  }
-  if (!reduce) addEventListener("scroll", onScroll, { passive: true });
+  const clock = document.getElementById("clock");
+  const tickClock = () => {
+    if (clock) clock.textContent = new Date().toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).replace(",", "");
+  };
+  tickClock();
+  setInterval(tickClock, 30000);
 
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) Object.values(decks).forEach((d) => d.stop());
